@@ -8,7 +8,7 @@
 @include('includes.validations-form')
 
 <form action="{{ route('users.store') }}" method="post" enctype="multipart/form-data">
-    @include('users.comments._partials.form')
+    @include('users._partials.form')
 </form>
 
 @endsection
