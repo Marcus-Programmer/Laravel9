@@ -8,15 +8,15 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    protected $model;
+    public function __construct(User $user)
+    {
+        $this->model = $user;
+    }
     public function index(Request $request){
 
-     $search =$request->search;
-        $users = User::where(function($query)use($search){
-            if($search)
-                $query->where('email',$search);
-                $query->orWhere('name','LIKE',"%{$search}%");
-        })->get();
-      
+     $search = $request->search;
+        $users = $this->model->getUsers(search:$request->search??'');      
         return view('users.index',compact('users'));
     }
 
@@ -36,9 +36,9 @@ class UserController extends Controller
     public function store(StoreUpdateUserFormRequest $request){
         $data=$request->all();
         $data['password'] = bcrypt($request->password);
-        $user = User::create($data);
+        $this->model->create($data);
 
-        return redirect()->route('users.show',$user->id);
+        return redirect()->route('users.index');
     }
     public function edit($id){
         if(!$user=User::find($id))
